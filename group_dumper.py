@@ -7,6 +7,16 @@ import sys
 import time
 import StringIO
 
+COOKIE = "lu=RQ0COYGdt11BsGwXGEiZmhUA; datr=6HaMVV2asW_BfalIBoF-i0KU; a11y=%7B%22sr%22%3A0%2C%22sr-ts%22%3A1435268850561%2C%22jk%22%3A0%2C%22jk-ts%22%3A1435268850561%2C%22kb%22%3A2%2C%22kb-ts%22%3A1435268850561%2C%22hcm%22%3A0%2C%22hcm-ts%22%3A1435268850561%7D; c_user=100003746848349; fr=0kp3GBzbYe2TRtapv.AWVg-KzmBcw8zdldlxMO2_v0qJA.BVjHbv.WS.AAA.0.AWU-fSei; xs=88%3AjGlDqhT3k-uhKQ%3A2%3A1435268847%3A14214; csm=2; s=Aa4KabBA3lC9v1Oj.BVjHbv; p=-2; act=1435287349385%2F7; presence=EM435287379EuserFA21B03746848349A2EstateFDsb2F1435286670663Et2F_5bDiFA2root_3a_3c1385512685669_3a2172934640-2580502031_40mail.projektitan.com_3eA2EsiFA2550377098381585A2ErF1CAcDiFA2user_3a1B00761719884A2ErF1CAcDiFA2user_3a1B04496133045A2ErF1C_5dElm2FA2user_3a1B04496133045A2Euct2F1435286670668EtrFnullEtwF308407872EatF1435287378079EwmlFDfolderFA2inboxA2Ethread_5fidFA2user_3a1B04496133045A2CG435287379258CEchFDp_5f1B03746848349F158CC; wd=1440x439"
+USER = "100003746848349"
+A = "1"
+DYN = "7AmajEyl2qm9rQ8DgDxiWOGeFDzECiq78hAKGhVoyupFLHwxBxvyUWdwIhEoyUnwPUS2O4K5e48vEwydCxu9xebK8KuEO"
+REQ = "17"
+FB_DTSG = "AQEiZR1DTNn4"
+TTSTAMP = "265816910590824968847811052"
+REV = "1806460"
+
+
 __author__ = "Raghav Sood"
 __copyright__ = "Copyright 2014"
 __credits__ = ["Raghav Sood"]
@@ -33,7 +43,7 @@ limit = int(sys.argv[2])
 headers = {"origin": "https://www.facebook.com", 
 "accept-encoding": "gzip,deflate", 
 "accept-language": "en-US,en;q=0.8", 
-"cookie": "your_cookie_value", 
+"cookie": COOKIE, 
 "pragma": "no-cache", 
 "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.122 Safari/537.36", 
 "content-type": "application/x-www-form-urlencoded", 
@@ -60,13 +70,13 @@ while end_mark not in messages_data:
 	data_text = {"messages[thread_fbids][" + str(talk) + "][offset]": str(offset), 
 	"messages[thread_fbids][" + str(talk) + "][limit]": str(limit), 
 	"client": "web_messenger", 
-	"__user": "your_user_id", 
-	"__a": "your __a", 
-	"__dyn": "your __dyn", 
-	"__req": "your __req", 
-	"fb_dtsg": "your_fb_dtsg", 
-	"ttstamp": "your_ttstamp", 
-	"__rev": "your __rev"}
+	"__user": USER, 
+	"__a": A, 
+	"__dyn": DYN, 
+	"__req": REQ, 
+	"fb_dtsg": FB_DTSG, 
+	"ttstamp": TTSTAMP, 
+	"__rev": REV}
 	data = urllib.urlencode(data_text)
 	url = "https://www.facebook.com/ajax/mercury/thread_info.php"
 	
