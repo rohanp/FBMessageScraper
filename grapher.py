@@ -2,33 +2,36 @@
 """ Automated Graphing of Facebook Messaging Data """
 
 import json
-import sys
 import pprint
 from collections import namedtuple, OrderedDict
 import os
 import datetime
 from dateutil.parser import parse
-import pprint
 import pickle as pkl
+import matplotlib.pyplot as pyplot
+import matplotlib.dates as mdates
 
 __author__ = "Rohan Pandit"
 __copyright__ = "Copyright {0}".format(datetime.date.today().year)
 
 pp = pprint.PrettyPrinter(indent=4)
 
-Message = namedtuple("Message", ['person', 'year', 'month', 'day', 'hour'])
+Message = namedtuple("Message", ['person', 'timestamp'])
 
 def main():
 	os.chdir("Messages")
 
-	#messages = loadMessages()
-	#messages += loadHangouts()
-	#pkl.dump(messages, open("../messages.pkl", 'wb'))
+	"""
+	messages = loadMessages()
+	messages += loadHangouts()
+	messages += loadHangouts('2')
+	pkl.dump(messages, open("../messages.pkl", 'wb'))
+	"""
 	messages = pkl.load(open("../messages.pkl", 'rb'))
 
 	print("Total Messages: ", len(messages))
 
-	graphTotalMessages(messages)
+	plotTotalMessages(messages, '7/25/14', '6/25/15')
 
 
 def loadMessages():
@@ -55,18 +58,18 @@ def loadMessages():
 		except KeyError:
 			person = decoded_json['other_user_fbid']
 		try:
-			time = parse(decoded_json['timestamp_datetime'])
+			timestamp = parse(decoded_json['timestamp_datetime'])
  			#TODO: Fix dates for last week 
 		except ValueError:
-			time = parseDate(decoded_json['timestamp_datetime'])
-	
-		messages.append(Message(person, int(str(time.year)[2:]), time.month, time.day, time.hour))
+			timestamp = parseDate(decoded_json['timestamp_datetime'])
+
+		messages.append(Message(person, timestamp))
 
 	return messages
 
-def loadHangouts():
+def loadHangouts(a=''):
 	messages = []
-	decoded_json = json.loads(open("Hangouts.json").read())
+	decoded_json = json.loads(open("Hangouts%s.json"%a).read())
 
 	len_convo = lambda i: len(i['conversation_state']['event'])
 	convos = sorted(decoded_json["conversation_state"], key=len_convo)
@@ -74,39 +77,70 @@ def loadHangouts():
 	for convo in convos:
 		for msg in convo["conversation_state"]["event"]:
 			try:
-				person = getPerson(msg['sender_id']['chat_id'])
+				person = getPerson(msg['conversation_id']['id'])
 			except KeyError:
-				person = msg['sender_id']['chat_id']
+				person = msg['conversation_id']['id']
 
-			time = datetime.datetime.fromtimestamp(int(msg['timestamp'])//1000000)
+			timestamp = datetime.datetime.fromtimestamp(int(msg['timestamp'])//1000000)
 
-			messages.append(Message(person, int(str(time.year)[2:]), time.month, time.day, time.hour))
+			messages.append(Message(person, timestamp))
 
 	print("Total Hangouts: ", len(messages))
 	return messages
 
 
-def graphTotalMessages(messages):
-	record = {"6/23/15":0}
-	date = "6/23/15"
-	count = 0
+def plotTotalMessages(messages, start_date, end_date):
+	start_date = parse(start_date)
+	end_date = parse(end_date)
+	print(start_date, end_date)
+
+	record = {"":0}
+	date = ""
 
 	for msg in messages:
-		msg_date = "{0}/{1}/{2}".format(msg.month, msg.day, msg.year)
+		msg_date = "{0}/{1}/{2}".format(msg.timestamp.month, msg.timestamp.day, msg.timestamp.year)
 
-		if date == msg_date:
-			record[date] += 1
-		else:
-			old_date = date
-			date = msg_date
+		if start_date < parse(msg_date) < end_date:
 
-			if date in record.keys():
+			if date == msg_date:
 				record[date] += 1
 			else:
-				record[date] = 1
+				old_date = date
+				date = msg_date
+
+				if date in record.keys():
+					record[date] += 1
+				else:
+					record[date] = 1
 
 	record = OrderedDict( sorted( record.items(), key=lambda t: int(parse(t[0]).strftime("%s")) ) )
-	pp.pprint(record)
+
+	dates = list(map(parse, list(record.keys())))
+	numMessages = list(record.values())
+	
+	years = mdates.YearLocator()
+	months = mdates.MonthLocator()
+	yearsFormat = mdates.DateFormatter('%Y')
+
+	fig, ax = pyplot.subplots()
+	ax.plot(dates, numMessages)
+
+	"""
+	#format ticks
+	ax.xaxis.set_major_locator(years)
+	ax.xaxis.set_major_locator(yearsFormat)
+	ax.xaxis.set_minor_locator(months)
+
+	ax.set_xlim(min(dates), max(dates))
+
+	ax.format_xdata = mdates.DateFormatter('%Y-%m-%d')
+	ax.grid(True)
+	fig.autofmt_xdate()
+	"""
+
+	pyplot.show()
+
+	#pp.pprint(record)
 
 ############### Utility Functions ################
 
@@ -155,7 +189,9 @@ person = {
 		1417642561853941:'TJ Hunt',
 		550377098381585:'Derp City',
 		789573971100453:'Rachel',
-		'UgxCAFWks7t61MHbACN4AaABAQ':'Dilip'
+		'UgxCAFWks7t61MHbACN4AaABAQ':'Dilip',
+		'Ugy9iByzX24wkgfWXFB4AaABAQ':'Rachel',
+		'Ugye5v649RFv0GFPx-B4AaABAQ':'Rachel'
 		}
 
 if __name__ == "__main__": main()
