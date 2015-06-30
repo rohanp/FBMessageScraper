@@ -56,17 +56,16 @@ def main():
 	mean = data.mean().sum()
 	print("Mean: ", mean)	
 
-	#'#D44D5C'
-	ax = toPlot.plot(title="Cumulative Messaging Data (Top 10, #1 Excluded)", \
-		color=['#DDA561','#682E2E','#00ACC1','#CC3300','#FC5F20','#6EEB83', 'k', 'm','b' ])
-	ax.set_ylabel("Num Messages (Cumulative)")
+	toPlot = cumMsgPlot(data, 10)
+	
+	ax = toPlot.plot(title="Cumulative Messaging Data (Top 10)")
 
 	pyplot.show()
 	plotTotalMessages(messages, start_date, end_date)
 
 def cumMsgPlot(data, x):
 	sum_data = data.apply(np.cumsum)
-	return sum_data.iloc[:,1:x]
+	return sum_data.iloc[:,:x]
 
 def totalMsgsTopXPlot(data, x): #bar graph
 	sum_data = data.iloc[:,:x].sum(axis=0)
@@ -229,58 +228,7 @@ def getPerson(_id):
 	return people[str(_id)]
 
 people = {
-		"100004255182066":'Ankit',
-		"100001629407080":'Alison',
-		"100000761719884":'Kevlin',
-		"100000403221435":'Pranay',
-		"100003238442927":'Vivek',
-		"100004081027353":'Rayana',
-		"100001128002655":'Michael You',
-		"100004468539961":'Srijith',
-		"100007730717911":'Philip Cho',
-		"100004496133045":'Matthew Kaufer',
-		"1702257415":'Andrew Huang',
-		"100006199622129":'Anusha',
-		"100005386399371":"Edward 'little shit' Shen",
-		"1795540795":'Sashank',
-		"100003272403235":'Tarun P.',
-		"100002452600456":'Joseph',
-		"100000756424022":'Jonathan',
-		"100003296135651":'Cheryl',
-		"100000471096235":'Josh Learn',
-		"100000830703634":'Kaushik V.',
-		"1497942558":'Avi',
-		"100004831269618":'Tarun K.',
-		"100003672744570":'Matthew S.',
-		"100004537931899":'Rachel',
-		"738046326264846":'Sheptiller',
-		"1396634270650233":'Puzzle Hunt',
-		"331888930354309":'Orgo',
-		"836256343110704":'Dags',
-		"943279359048126":'Dags',
-		"484394795045364":'Dags',
-		"1604705696418394":'Sheptiller',
-		"711430812206486":'Church of Acio',
-		"1417642561853941":'TJ Hunt',
-		"550377098381585":'Derp City',
-		"789573971100453":'Rachel',
-		"100004537931899":'Rachel',
-		"1795540795":'Sashank',
-		"100003746848349":'Rachel',
-		'UgxCAFWks7t61MHbACN4AaABAQ':'Dilip',
-		'Ugy9iByzX24wkgfWXFB4AaABAQ':'Rachel',
-		'Ugye5v649RFv0GFPx-B4AaABAQ':'Rachel',
-		'UgxFVgsVFhQqij5yLUd4AaABAQ':'Pranay',
-		'UgwZ3G47YOszRHTUrat4AaABAQ':'Pranay',
-		'UgwY4fwEZHPvShvTFd94AaABAQ':'Kareem',
-		'UgzyTtDvfF4NRX6-NEd4AaABAQ':'Kevlin',
-		'100000756156415':'Ankitha',
-		'100001947235776':'Harsha',
-		'Ugy3WI1iNAVVyqtAz8J4AaABAQ':'Srijith',
-		'UgxG4T1spRtMbhsFK854AaABAQ':'Ellis',
-		'100003774101840':'Jay W.',
-		'100000452755853':'Ellis',
-		'100003791942334':'Pranay Dubey'
+		#fill this out yourself :)
 		}
 
 if __name__ == "__main__": main()
