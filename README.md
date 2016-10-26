@@ -9,3 +9,6 @@ You can skip this step if you used the scraper built into this rep.
 
 ## Part 2: Make cool graphs! :000
 Here are some example commands and associated graphs:
+
+## Todo
+Add dope pictures to README
